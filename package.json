@@ -1,6 +1,6 @@
 {
   "name": "fuzzy-search-fs",
-  "version": "0.0.1-development",
+  "version": "0.0.2-development",
   "description": "Search file system",
   "main": "./lib/src/index.js",
   "files": [
