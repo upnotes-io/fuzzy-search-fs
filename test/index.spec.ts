@@ -10,6 +10,10 @@ describe('index', () => {
           'some-file.txt': 'file content here',
           'empty-dir': {},
         },
+        'path/to/fake/.dir': {
+          'some-file.txt': 'hidden files should be ignored',
+          'empty-dir': {},
+        },
         'path/to/some.png': Buffer.from([8, 6, 7, 5, 3, 0, 9]),
         'some/other/path': {},
       });
@@ -17,6 +21,10 @@ describe('index', () => {
     it('should return a single file', async function () {
       const results = await fuzzySearchFS('path/', 'file');
       expect(results).toStrictEqual(['path/to/fake/dir/some-file.txt']);
+    });
+    it('should ignore hidden files', async function () {
+      const results = await fuzzySearchFS('path/', 'hidden');
+      expect(results).toStrictEqual([]);
     });
     it('should return empty if does not match', async function () {
       const results = await fuzzySearchFS('path/', 'randomText');

@@ -15,7 +15,7 @@ export const fuzzySearchFS = async (
   if (!options) {
     options = {};
   }
-  const results = [];
+  const results: string[] | PromiseLike<string[]> = [];
   const stats = await fsPromises.stat(rootPath);
   if (stats.isFile()) {
     const fileContent = await fsPromises.readFile(rootPath, 'utf8');
@@ -26,6 +26,10 @@ export const fuzzySearchFS = async (
       results.push(rootPath);
     }
   } else {
+    // @ts-ignore
+    if (rootPath.split(path.sep).pop().startsWith('.')) {
+      return results;
+    }
     console.log(rootPath, searchText, options);
     const paths = await fsPromises.readdir(rootPath);
     console.log('Paths:', paths);
