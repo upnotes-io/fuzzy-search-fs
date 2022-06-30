@@ -18,11 +18,12 @@ export const fuzzySearchFS = async (
   const results: string[] | PromiseLike<string[]> = [];
   const stats = await fsPromises.stat(rootPath);
   if (stats.isFile()) {
-    const fileContent = await fsPromises.readFile(rootPath, 'utf8');
+    let fileContent = await fsPromises.readFile(rootPath, 'utf8');
     if (options.caseSensitive) {
       searchText = searchText.toLowerCase();
     }
-    if (fileContent.includes(searchText)) {
+    fileContent += rootPath;
+    if (fileContent.toLocaleLowerCase().includes(searchText)) {
       results.push(rootPath);
     }
   } else {
