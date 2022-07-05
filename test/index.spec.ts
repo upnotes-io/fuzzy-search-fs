@@ -9,6 +9,9 @@ describe('index', () => {
         'path/to/fake/dir': {
           'some-file.txt': 'File content Here',
           'empty-dir': {},
+          'another-dir': {
+            '.gitignore': '.ds_store',
+          },
         },
         'path/to/fake/.dir': {
           'some-file.txt': 'hidden files should be ignored',
@@ -22,8 +25,12 @@ describe('index', () => {
       const results = await fuzzySearchFS('path/', 'file');
       expect(results).toStrictEqual(['path/to/fake/dir/some-file.txt']);
     });
-    it('should ignore hidden files', async function () {
+    it('should ignore hidden dir', async function () {
       const results = await fuzzySearchFS('path/', 'hidden');
+      expect(results).toStrictEqual([]);
+    });
+    it('should ignore hidden files', async function () {
+      const results = await fuzzySearchFS('path/', 'ds');
       expect(results).toStrictEqual([]);
     });
     it('should search in file name', async function () {
