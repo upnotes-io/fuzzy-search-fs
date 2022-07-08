@@ -7,8 +7,11 @@ describe('index', () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       mock({
         'path/to/fake/dir': {
-          'some-file.txt': 'file content here',
+          'some-file.txt': 'File content Here',
           'empty-dir': {},
+          'another-dir': {
+            '.gitignore': '.ds_store',
+          },
         },
         'path/to/fake/.dir': {
           'some-file.txt': 'hidden files should be ignored',
@@ -22,9 +25,17 @@ describe('index', () => {
       const results = await fuzzySearchFS('path/', 'file');
       expect(results).toStrictEqual(['path/to/fake/dir/some-file.txt']);
     });
-    it('should ignore hidden files', async function () {
+    it('should ignore hidden dir', async function () {
       const results = await fuzzySearchFS('path/', 'hidden');
       expect(results).toStrictEqual([]);
+    });
+    it('should ignore hidden files', async function () {
+      const results = await fuzzySearchFS('path/', 'ds');
+      expect(results).toStrictEqual([]);
+    });
+    it('should search in file name', async function () {
+      const results = await fuzzySearchFS('path/', 'some-file');
+      expect(results).toStrictEqual(['path/to/fake/dir/some-file.txt']);
     });
     it('should return empty if does not match', async function () {
       const results = await fuzzySearchFS('path/', 'randomText');

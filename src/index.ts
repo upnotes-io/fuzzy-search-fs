@@ -16,20 +16,21 @@ export const fuzzySearchFS = async (
     options = {};
   }
   const results: string[] | PromiseLike<string[]> = [];
+  // @ts-ignore
+  if (rootPath.split(path.sep).pop().startsWith('.')) {
+    return results;
+  }
   const stats = await fsPromises.stat(rootPath);
   if (stats.isFile()) {
-    const fileContent = await fsPromises.readFile(rootPath, 'utf8');
+    let fileContent = await fsPromises.readFile(rootPath, 'utf8');
     if (options.caseSensitive) {
       searchText = searchText.toLowerCase();
     }
-    if (fileContent.includes(searchText)) {
+    fileContent += rootPath;
+    if (fileContent.toLocaleLowerCase().includes(searchText)) {
       results.push(rootPath);
     }
   } else {
-    // @ts-ignore
-    if (rootPath.split(path.sep).pop().startsWith('.')) {
-      return results;
-    }
     console.log(rootPath, searchText, options);
     const paths = await fsPromises.readdir(rootPath);
     console.log('Paths:', paths);
